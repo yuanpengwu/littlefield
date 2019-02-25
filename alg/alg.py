@@ -57,6 +57,29 @@ def backtest(session_id):
 
 def backtest_throughput_rate(session_id):
     obj = Littlefield('group6', 'coronado91', session_id)
+    th_dict = {
+        'queue_th': 100,
+        'util_th': 0.99
+    }
+    ord = obj.orders.job_arrivals()
+    rev = obj.completed_jobs.revenues()
+    jobs = obj.completed_jobs.count()
+    for ind in range(len(ord)-5, len(ord)):
+        calculate_station1_R(obj, ind, th_dict)
+        calculate_station1_R(obj, ind, th_dict)
+        calculate_station1_R(obj, ind, th_dict)
+        print("Order at time ", ind, " is ", ord[ind])
+        #print(jobs)
+        print("Contract 1 completed jobs for ", ind, " is ", jobs[0][2][ind])
+        #print("Contract 2 completed jobs for ", ind, " is ", jobs[0][2][ind])
+        #print("Contract 3 completed jobs for ", ind, " is ", jobs[0][2][ind])
+        print("Contract 1 Rev at time ", ind, " is ", rev[0][2][ind])
+        print("Contract 2 Rev at time ", ind, " is ", rev[1][2][ind])
+        print("Contract 3 Rev at time ", ind, " is ", rev[2][2][ind])
+
+        print("#####################################################")
+
+
 
 
 
@@ -70,14 +93,22 @@ if  __name__ == '__main__':
     password = 'coronado91'
     opener = login.Login(username,password,url)
     web_driver = opener.process()
-    time.sleep(3)
+    time.sleep(1)
     from pynput.keyboard import Key, Controller
     keyboard = Controller()
-    keyboard.press(Key.enter)
-    keyboard.release(Key.enter)
-    time.sleep(3)
+    #keyboard.press(Key.enter)
+    #keyboard.release(Key.enter)
+    #time.sleep(3)
     cookies = web_driver.get_cookie('JSESSIONID')
     print(cookies['value'])
 
-
-    backtest(cookies['value'])
+#################################################################
+    while True:
+        #backtest(cookies['value'])
+        backtest_throughput_rate(cookies['value'])
+        time.sleep(10*60) # refresh every 10 mins
+        keyboard.press(Key.f5)
+        keyboard.release(Key.f5)
+        time.sleep(2)
+        cookies = web_driver.get_cookie('JSESSIONID')
+        print(cookies['value'])

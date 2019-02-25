@@ -106,13 +106,16 @@ def parse_station_info(num_machines, scheduling_policy, purchase_price, retireme
 
 
 class Littlefield:
-    def __init__(self, team_id='', password=''):
+    def __init__(self, team_id='', password='', session_id=None):
         if team_id == '' or password == '':
             self.team_id, self.password = Littlefield._get_credentials_from_environment()
         else:
             self.team_id = team_id
             self.password = password
-        self.session_id = self._get_session_id()
+        if session_id == None:
+            self.session_id = self._get_session_id()
+        else:
+            self.session_id = session_id
 
         self.orders = Orders(self)
         self.materials = Materials(self)
