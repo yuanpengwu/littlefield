@@ -50,7 +50,8 @@ def backtest(session_id):
         'queue_th' : 100,
         'util_th' : 0.99
     }
-    for ind in range(260):
+    ords = obj.completed_jobs.count()
+    for ind in range(len(ords[0][2])):
         calculate_station1_R(obj, ind, th_dict)
         calculate_station2_R(obj, ind, th_dict)
         calculate_station3_R(obj, ind, th_dict)
@@ -106,7 +107,7 @@ if  __name__ == '__main__':
     while True:
         #backtest(cookies['value'])
         backtest_throughput_rate(cookies['value'])
-        time.sleep(10*60) # refresh every 10 mins
+        time.sleep(20*60) # refresh every 10 mins
         keyboard.press(Key.f5)
         keyboard.release(Key.f5)
         time.sleep(2)
