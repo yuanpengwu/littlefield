@@ -50,36 +50,56 @@ def backtest(session_id):
         'queue_th' : 100,
         'util_th' : 0.99
     }
+    _orders = []
+    _average_order = []
+    _average_sum = 0
     ords = obj.completed_jobs.count()
+    ord = obj.orders.job_arrivals()
     for ind in range(len(ords[0][2])):
         calculate_station1_R(obj, ind, th_dict)
         calculate_station2_R(obj, ind, th_dict)
         calculate_station3_R(obj, ind, th_dict)
+        print("Order at time ", ind, " is ", ord[ind])
+        _orders.append(ord[ind][1])
+        print("#####################################################")
+    for ind, val in enumerate(_orders):
+        print(ind, " ,", val)
+        if ind <= len(ords[0][2]) - 5:
+            _average_order.append(sum(_orders[ind:ind+5])/5)
+    print("order 5 day average:")
+    print(_average_order)
+    # export to a csv file
+    import csv
+    with open('average_demand.csv', 'w+') as csvfile:
+        csv_writer = csv.writer(csvfile, delimiter=',')
+        csv_writer.writerow(_average_order)
 
 def backtest_throughput_rate(session_id):
     obj = Littlefield('group6', 'coronado91', session_id)
     th_dict = {
         'queue_th': 100,
-        'util_th': 0.99
+        'util_th': 0.90
     }
     ord = obj.orders.job_arrivals()
     rev = obj.completed_jobs.revenues()
     jobs = obj.completed_jobs.count()
+    ave_demand = 0
     for ind in range(len(ord)-5, len(ord)):
         calculate_station1_R(obj, ind, th_dict)
-        calculate_station1_R(obj, ind, th_dict)
-        calculate_station1_R(obj, ind, th_dict)
+        calculate_station2_R(obj, ind, th_dict)
+        calculate_station3_R(obj, ind, th_dict)
         print("Order at time ", ind, " is ", ord[ind])
         #print(jobs)
         print("Contract 1 completed jobs for ", ind, " is ", jobs[0][2][ind])
-        #print("Contract 2 completed jobs for ", ind, " is ", jobs[0][2][ind])
-        #print("Contract 3 completed jobs for ", ind, " is ", jobs[0][2][ind])
+        print("Contract 2 completed jobs for ", ind, " is ", jobs[1][2][ind])
+        print("Contract 3 completed jobs for ", ind, " is ", jobs[2][2][ind])
         print("Contract 1 Rev at time ", ind, " is ", rev[0][2][ind])
         print("Contract 2 Rev at time ", ind, " is ", rev[1][2][ind])
         print("Contract 3 Rev at time ", ind, " is ", rev[2][2][ind])
+        ave_demand = ave_demand + ord[ind][1]
 
         print("#####################################################")
-
+    print("Average Demand = ", ave_demand/5)
 
 
 
@@ -92,6 +112,8 @@ if  __name__ == '__main__':
     url = "http://op.responsive.net/lt/ucsd2"
     username = 'group6'
     password = 'coronado91'
+    #username = 'gogo'
+    #password = 'dada'
     opener = login.Login(username,password,url)
     web_driver = opener.process()
     time.sleep(1)
@@ -105,11 +127,11 @@ if  __name__ == '__main__':
 
 #################################################################
     while True:
-        #backtest(cookies['value'])
-        backtest_throughput_rate(cookies['value'])
+        backtest(cookies['value'])
+        #backtest_throughput_rate(cookies['value'])
         time.sleep(20*60) # refresh every 10 mins
-        keyboard.press(Key.f5)
-        keyboard.release(Key.f5)
+        #keyboard.press(Key.f5)
+        #keyboard.release(Key.f5)
         time.sleep(2)
         cookies = web_driver.get_cookie('JSESSIONID')
         print(cookies['value'])

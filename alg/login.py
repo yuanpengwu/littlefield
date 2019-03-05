@@ -7,8 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from littlefield import Littlefield
 
-from station1 import station1
-
 class Login:
     def __init__(self,  user, pw, url):
         self._username = user
