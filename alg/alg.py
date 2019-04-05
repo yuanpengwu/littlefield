@@ -80,6 +80,7 @@ def backtest_throughput_rate(session_id):
         'queue_th': 100,
         'util_th': 0.90
     }
+
     ord = obj.orders.job_arrivals()
     rev = obj.completed_jobs.revenues()
     jobs = obj.completed_jobs.count()
@@ -90,6 +91,7 @@ def backtest_throughput_rate(session_id):
         calculate_station3_R(obj, ind, th_dict)
         print("Order at time ", ind, " is ", ord[ind])
         #print(jobs)
+
         print("Contract 1 completed jobs for ", ind, " is ", jobs[0][2][ind])
         print("Contract 2 completed jobs for ", ind, " is ", jobs[1][2][ind])
         print("Contract 3 completed jobs for ", ind, " is ", jobs[2][2][ind])
@@ -109,26 +111,25 @@ if  __name__ == '__main__':
     #R1_capacity = 5*60
     #R3_capacity = 15*60
 
-    url = "http://op.responsive.net/lt/ucsd2"
-    username = 'group6'
-    password = 'coronado91'
-    #username = 'gogo'
-    #password = 'dada'
+    #url = "http://op.responsive.net/lt/ucsd2"
+    url = 'mit.responsive.net/lt/opscom'
+    username = 'radytripler'
+    password = 'radymit2019'
     opener = login.Login(username,password,url)
     web_driver = opener.process()
     time.sleep(1)
     from pynput.keyboard import Key, Controller
     keyboard = Controller()
-    #keyboard.press(Key.enter)
-    #keyboard.release(Key.enter)
-    #time.sleep(3)
+    keyboard.press(Key.enter)
+    keyboard.release(Key.enter)
+    time.sleep(3)
     cookies = web_driver.get_cookie('JSESSIONID')
     print(cookies['value'])
 
 #################################################################
     while True:
-        backtest(cookies['value'])
-        #backtest_throughput_rate(cookies['value'])
+        #backtest(cookies['value'])
+        backtest_throughput_rate(cookies['value'])
         time.sleep(20*60) # refresh every 10 mins
         #keyboard.press(Key.f5)
         #keyboard.release(Key.f5)
